@@ -12,7 +12,7 @@
 
 #include "hash_table.h"
 #include <stdbool.h>
-#include <cstdint>
+#include <stdint.h>
 
 /**
  * Magic number for file format identification

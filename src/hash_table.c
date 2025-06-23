@@ -308,7 +308,7 @@ size_t ht_capacity(hash_table_t* table) {
  * Initialize an iterator for the hash table
  * sets up an iterator to traverse all key-value pairs
  */
-ht_iterator_t ht_iterator_inti(hash_table_t* table) {
+ht_iterator_t ht_iterator_init(hash_table_t* table) {
     ht_iterator_t iter;
     iter.table = table;
     iter.index = 0;

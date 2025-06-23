@@ -102,6 +102,11 @@ typedef struct {
 } ht_iterator_t;
 
 /**
+ * Init an iterator for the hash table
+ */
+ht_iterator_t ht_iterator_init(hash_table_t* table);
+
+/**
  * Get the next key-value pair from the iterator
  * @param iter pointer to the iterator
  * @param key pointer to store the key
