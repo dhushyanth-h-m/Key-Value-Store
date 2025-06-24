@@ -95,8 +95,8 @@ size_t kvs_count(kvstore_t* kvs) {
         // validate params
     if (!kvs || !kvs->table) {
         kvs_set_error(KVS_ERROR_INVALID_PARAM);
+        return 0;
     }
-    return 0;
 
     return ht_size(kvs->table);
 }

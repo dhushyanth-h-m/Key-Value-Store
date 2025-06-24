@@ -145,7 +145,7 @@ static void handle_get_command(kvstore_t* kvs, char* args) {
     if (value) {
         printf("Get: %d = \"%s\"\n", key, value); 
     } else {
-        printf("Key %d not found.\n");
+        printf("Key %d not found.\n", key);
     }
 }
 
@@ -204,7 +204,7 @@ static void handle_load_command(kvstore_t* kvs, char* args) {
 
     // check if file exists 
     if (!kvs_file_exists(filename)) {
-        printf("Error: File '%s' does not exist,\n");
+        printf("Error: File '%s' does not exist,\n", filename);
         return;
     }
 
@@ -310,7 +310,7 @@ static bool process_command(kvstore_t* kvs, char* line) {
             printf("Loaded %zu entries from '%s'\n",
             kvs_count(kvs), DEFAULT_FILENAME);
         } else {
-            printf("Warning: Could not load '%s'\n",
+            printf("Warning: Could not load '%s': %s\n",
             DEFAULT_FILENAME, kvs_error_string(kvs_get_error()));
         }
         printf("\n");
