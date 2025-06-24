@@ -137,7 +137,7 @@ bool kvs_load(kvstore_t* kvs, const char* filename) {
     }
 
     // load from file
-    if (!kvs_load_from_file(kvs->filename, filename)) {
+    if (!kvs_load_from_file(kvs->table, filename)) {
         return false;
     }
 

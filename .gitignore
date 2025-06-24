@@ -1,2 +1,16 @@
 .vscode/
 .DS_Store
+
+# Build artifacts
+build/
+*.o
+
+# Executable binaries
+kvstore
+test_kvstore
+
+# Binary data files
+*.bin
+
+# Logs
+*.log

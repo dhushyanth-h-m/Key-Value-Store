@@ -101,7 +101,7 @@ static bool resize_table (hash_table_t* table, size_t new_capacity) {
     if (!table->entries) {
         //restore old entries on failure
         table->entries = old_entries;
-        key_set_error(KVS_ERROR_MEMORY);
+        kvs_set_error(KVS_ERROR_MEMORY);
         return false;
     }
 

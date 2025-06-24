@@ -39,6 +39,11 @@ bool kvs_set(kvstore_t* kvs, int key, const char* value);
 const char* kvs_get(kvstore_t* kvs, int key);
 
 /**
+ * Delete a key-value pair
+ */
+bool kvs_delete(kvstore_t* kvs, int key);
+
+/**
  * get the number of key-value pairs in the store
  */
 size_t kvs_count(kvstore_t* kvs);

@@ -3,6 +3,7 @@
  */
 
 #include "kvstore.h"
+#include "persistence.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -51,7 +52,7 @@ static char* trim_whitespaces(char* str) {
     // null-terminate after last non-whitespace character
     end[1] = '\0';
 
-    return 0;
+    return str;
 }
 
 /**
@@ -118,7 +119,7 @@ static void handle_set_command(kvstore_t* kvs, char* args) {
     if (kvs_set(kvs, key, value)) {
         printf("Set: %d = \"%s\"\n", key, value);
     } else {
-        print("Error: Failed to set key-value pair: %s\n", kvs_set_string(kvs_get_error()));
+        printf("Error: Failed to set key-value pair: %s\n", kvs_error_string(kvs_get_error()));
     }
 }
 
@@ -280,10 +281,74 @@ static bool process_command(kvstore_t* kvs, char* line) {
     } else if (strcmp(command, "quit") == 0 || strcmp(command, "exit") == 0) {
         return false;
     } else {
-        printf("Unknown command: %s (type 'help' for available commands)\n", commands);
+        printf("Unknown command: %s (type 'help' for available commands)\n", command);
     }
 
     return true;
 
 }
 
+/**
+ * Entry point of the program 
+ * Sets up the key-value store and runs the interactive loop
+ */
+
+ int main(int argc, char*argv[]) {
+    printf("Key-value Store Interactive Shell\n");
+    printf("Type 'help' for available commands, 'quit' or 'exit'.\n\n");
+
+    // create the key-value store
+    kvstore_t* kvs = kvs_create(0); 
+    if (!kvs) {
+        printf("Error: Failed to create key-value store: %s\n", kvs_error_string(kvs_get_error()));
+        return 1;
+    }
+
+    // Try to load data from default file if it exists
+    if (kvs_file_exists(DEFAULT_FILENAME)){
+        if (kvs_load(kvs,DEFAULT_FILENAME)) {
+            printf("Loaded %zu entries from '%s'\n",
+            kvs_count(kvs), DEFAULT_FILENAME);
+        } else {
+            printf("Warning: Could not load '%s'\n",
+            DEFAULT_FILENAME, kvs_error_string(kvs_get_error()));
+        }
+        printf("\n");
+    }
+
+    // main interactive loop
+    char line[MAX_LINE_LENGTH];
+    while (true) {
+        printf("kvs> ");
+        fflush(stdout); 
+
+        // Read input line
+        if (!fgets(line, sizeof(line), stdin)) {
+            printf("\n");
+            break;
+        }
+
+        // remove newline character
+        line[strcspn(line, "\n")] = '\0';
+
+        // process the command 
+        if (!process_command(kvs, line)) {
+            break;
+        }
+    }
+
+    // Auto-save on exit if there's data
+    if (kvs_count(kvs) > 0) {
+        printf("Auto-saving data to '%s'....\n", DEFAULT_FILENAME);
+        if (!kvs_save(kvs, DEFAULT_FILENAME)) {
+            printf("Warning: Could not save data: %s\n",
+            kvs_error_string(kvs_get_error()));
+        }
+    }
+
+    //clean up
+    kvs_destroy(kvs);
+    printf("Goodbye!\n");
+
+    return 0;
+ }
