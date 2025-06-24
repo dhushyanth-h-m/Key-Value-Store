@@ -235,3 +235,55 @@ static void handle_clear_command(kvstore_t* kvs) {
                kvs_error_string(kvs_get_error()));
     }
 }
+
+/**
+ * Process a single command line
+ */
+static bool process_command(kvstore_t* kvs, char* line) {
+    // trim whitespaces and check for emtpy line
+    line = trim_whitespaces(line);
+    if (strlen(line) == 0) {
+        return true;
+    }
+
+    // parse command
+    char* command = strtok(line, " \t");
+    if (!command) {
+        return true;
+    }
+
+    // Get argument (rest of the line)
+    char* args = strtok(NULL, "");
+    if (!args) {
+        args = "";
+    }
+
+    // process commands
+    if (strcmp(command, "set") == 0) {
+        handle_set_command(kvs, args);
+    } else if (strcmp(command, "get") == 0) {
+        handle_get_command(kvs, args);
+    } else if (strcmp(command, "delete") == 0 || strcmp(command, "del") == 0) {
+        handle_delete_command(kvs, args);
+    } else if (strcmp(command, "list") == 0 || strcmp(command, "ls") == 0) {
+        kvs_print_all(kvs);
+    } else if (strcmp(command, "stats") == 0) {
+        kvs_print_stats(kvs);
+    } else if (strcmp(command, "save") == 0) {
+        handle_save_command(kvs, args);
+    } else if (strcmp(command, "load") == 0) {
+        handle_load_command(kvs, args);
+    } else if (strcmp(command, "clear") == 0) {
+        handle_clear_command(kvs);
+    } else if (strcmp(command, "help") == 0 || strcmp(command, "?") == 0) {
+        print_help();
+    } else if (strcmp(command, "quit") == 0 || strcmp(command, "exit") == 0) {
+        return false;
+    } else {
+        printf("Unknown command: %s (type 'help' for available commands)\n", commands);
+    }
+
+    return true;
+
+}
+
